@@ -36,6 +36,7 @@ $container['db'] = function($container) {
 };
 
 $app->get('/', TokenController::class.":index");
+$app->get('/isverified/{token}', TokenController::class.":isVerified");
 
 
 $app->run();
