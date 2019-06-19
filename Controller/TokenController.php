@@ -6,10 +6,12 @@ use Slim\Http\Response;
 class TokenController {
     private $app;
     private $db;
+    private $redirectTo;
 
     public function __construct(Container $app) {
         $this->app = $app;
         $this->db = $app['db'];
+        $this->redirectTo = $app['redirectTo'];
     }
 
     //
@@ -45,14 +47,14 @@ class TokenController {
         $res->execute();
         $status = $res->fetch()['status'];
 
-        $array = ['status' => 'error'];
+        $redirect = $this->redirectTo['error'];
         if($status != "verified" && $status != "") {
             $res = $this->db->prepare("update tokens set status = 'verified' where token = :tok");
             $res->bindParam(":tok", $token);
             $res->execute();
-            $array['status'] = 'success';
+            $redirect = $this->redirectTo['success'] . "?token=" . $token;
         }
-        return $response->withJson($array);
+        return $response->withRedirect($redirect);
     }
     
     private function createToken() {

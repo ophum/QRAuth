@@ -11,7 +11,11 @@ $config = [
             'dsn' => 'sqlite:database.sqlite',
             'user' => '',
             'password' => '',
-		],
+        ],
+        'redirectTo' => [
+            'success' => '/success',
+            'error' => '/error',
+        ],
     ],
 ];
 
@@ -35,9 +39,15 @@ $container['db'] = function($container) {
 	return $pdo;	
 };
 
+$container['redirectTo'] = function($container) {
+    return $container['settings']['redirectTo'];
+};
+
 $app->get('/', TokenController::class.":index");
 $app->get('/isverified/{token}', TokenController::class.":isVerified");
 $app->get('/verify/{token}', TokenController::class.":verify");
 
+$app->get('/success', SampleController::class.":index");
+$app->get('/error', SampleController::class.":error");
 
 $app->run();
