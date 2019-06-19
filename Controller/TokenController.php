@@ -36,6 +36,25 @@ class TokenController {
         return $response->withJson($array);
         
     }
+
+    public function verify(Request $request, Response $response, array $args) {
+        $token = $args['token'];
+
+        $res = $this->db->prepare("select status from tokens where token = :tok");
+        $res->bindParam(":tok", $token);
+        $res->execute();
+        $status = $res->fetch()['status'];
+
+        $array = ['status' => 'error'];
+        if($status != "verified" && $status != "") {
+            $res = $this->db->prepare("update tokens set status = 'verified' where token = :tok");
+            $res->bindParam(":tok", $token);
+            $res->execute();
+            $array['status'] = 'success';
+        }
+        return $response->withJson($array);
+    }
+    
     private function createToken() {
         $tok = sha1(uniqid(rand(), true));
 
