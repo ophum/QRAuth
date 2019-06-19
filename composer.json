@@ -1,0 +1,6 @@
+{
+    "require": {
+        "slim/slim": "^3.0",
+        "rubellum/slim-blade-view": "^0.1.1"
+    }
+}
